@@ -1,0 +1,22 @@
+{
+  "name": "newscast",
+  "version": "0.2.0",
+  "type": "module",
+  "description": "An interruptible two-host podcast about anything, that you can call into.",
+  "license": "MIT",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "check": "node --check server.js && node scripts/selftest.mjs && node scripts/library-engine-test.mjs && node scripts/library-api-test.mjs && node --test scripts/public-gateway.test.mjs",
+    "e2e": "node scripts/e2e.mjs",
+    "wire-budget": "node scripts/wire-budget.mjs"
+  },
+  "engines": {
+    "node": ">=20.12"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.71.0",
+    "express": "^5.1.0"
+  }
+}

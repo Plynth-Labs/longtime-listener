@@ -1,0 +1,7 @@
+.git
+node_modules
+data
+redirects
+fly.toml
+README.md
+.env

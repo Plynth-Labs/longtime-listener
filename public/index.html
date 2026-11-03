@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="newscast-api-base" content="" />
+    <title>Longtime Listener</title>
+    <link rel="canonical" href="https://drop.jonomatus.ky/longtime-listener/" />
+    <meta name="description" content="A podcast you can call into. Pick a topic, listen, and steer the conversation." />
+    <meta property="og:site_name" content="Longtime Listener" />
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='26' font-size='26'%3E%F0%9F%8E%99%3C/text%3E%3C/svg%3E"
+    />
+  </head>
+  <body>
+    <!--
+      The room. Two side panels light up with whichever host is talking and a floor
+      panel lights up with the listener's own voice; all three are driven by measured
+      audio levels, and all three are inert decoration that never intercepts a tap.
+    -->
+    <div class="room" aria-hidden="true">
+      <div class="glow glow-left" id="glow-left"></div>
+      <div class="glow glow-right" id="glow-right"></div>
+      <div class="glow glow-floor" id="glow-floor"></div>
+    </div>
+
+    <main id="studio" class="studio welcome">
+      <header class="bar">
+        <div class="brand">
+          <span id="onair" class="onair">ON AIR</span>
+          <span class="brand-name">Longtime Listener</span>
+        </div>
+        <div class="bar-actions">
+          <button id="open-library" class="ghost" aria-expanded="false" aria-controls="library">My podcasts</button>
+          <button id="new-episode" class="ghost" hidden>New episode</button>
+          <button id="share-current" class="ghost" hidden>Share</button>
+          <button id="new-podcast" class="ghost" hidden>New podcast</button>
+          <button id="toggle-profile" class="ghost" aria-expanded="false" hidden>Profile</button>
+        </div>
+      </header>
+
+      <p id="stub-warning" class="banner" hidden>
+        Demo wire: these stories are invented test data, not the news.
+      </p>
+
+      <section class="show-card" aria-labelledby="episode-title">
+        <p id="show-title" class="series-title">Longtime Listener</p>
+        <h1 id="episode-title">Your first episode</h1>
+        <p id="episode-brief" class="episode-brief"></p>
+        <p id="episode-context" class="episode-context" hidden></p>
+        <details id="episode-outline-wrap" class="episode-outline-wrap" hidden>
+          <summary>Episode guide</summary>
+          <ol id="episode-outline" class="episode-outline" aria-label="Episode outline"></ol>
+        </details>
+      </section>
+
+      <div class="scroller" id="transcript" aria-label="Transcript">
+        <div id="welcome-content">
+          <section class="topic-start" aria-labelledby="topic-question">
+            <h1 id="topic-question">What should your first podcast be about?</h1>
+            <button id="welcome-library" class="library-entry" aria-expanded="false" aria-controls="library">
+              My podcasts
+            </button>
+            <p id="setup-status" class="setup-status" role="status"></p>
+            <p id="disclosure" class="disclosure">
+              Ari, Dev, and Sam are AI voices. Their reporting can be wrong.
+            </p>
+          </section>
+        </div>
+        <div id="shared-content" hidden>
+          <section class="shared-start" aria-labelledby="shared-title">
+            <p id="shared-podcast" class="series-title"></p>
+            <h1 id="shared-title">Shared episode</h1>
+            <p id="shared-brief" class="shared-brief"></p>
+            <p id="shared-parent" class="shared-parent" hidden></p>
+            <button id="shared-listen" class="primary">Listen from beginning</button>
+            <p class="shared-call-note">
+              Call in while you listen to create your own version. The original stays unchanged.
+            </p>
+            <button id="shared-home" class="ghost">Make a new podcast</button>
+            <p id="shared-status" class="setup-status" role="status"></p>
+          </section>
+        </div>
+      </div>
+
+      <button id="to-live" class="to-live" hidden>Back to live ↓</button>
+
+      <div class="dock" id="dock">
+        <div class="dock-row" id="dock-controls">
+          <button id="pause" class="ctl" aria-pressed="false">
+            <span class="ctl-icon ctl-pause" aria-hidden="true"></span><span id="pause-label">Pause</span>
+          </button>
+          <button id="call-in" class="ctl call">
+            <span class="ctl-icon ctl-mic" aria-hidden="true"></span><span id="call-label">Speak your answer</span>
+          </button>
+          <form id="topic-form" class="topic-form">
+            <label for="topic-text">or type it in here</label>
+            <div class="topic-input">
+              <textarea id="topic-text" rows="3" maxlength="600" aria-label="Podcast topic"></textarea>
+              <button id="topic-submit" class="primary" disabled>Start my podcast</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- The call sheet replaces the controls in place, so the thing you tap and
+             the thing that responds are in the same spot. -->
+        <div class="dock-row call-sheet" id="call-sheet" hidden>
+          <p class="call-state" id="call-state">On the board</p>
+          <p class="call-copy" id="call-copy">The hosts are finishing their thought.</p>
+          <textarea id="call-text" rows="2" hidden maxlength="600"
+            placeholder="What would you like this podcast to be about?" aria-label="What should we talk about?"></textarea>
+          <div class="call-actions">
+            <button id="call-type" class="ctl quiet">Type instead</button>
+            <button id="call-cancel" class="ctl">Hang up</button>
+            <button id="call-done" class="ctl primary" disabled>Done speaking</button>
+          </div>
+        </div>
+      </div>
+
+      <aside id="library" class="library" hidden aria-label="My podcasts">
+        <div class="library-head">
+          <div>
+            <p class="kicker">Library</p>
+            <h2>My podcasts</h2>
+          </div>
+          <button id="close-library" class="ghost">Close</button>
+        </div>
+        <p id="library-status" class="library-status" role="status">Loading your podcasts…</p>
+        <div id="library-list" class="library-list"></div>
+        <div id="share-result" class="share-result" hidden>
+          <label for="share-url">Share link</label>
+          <div class="share-url-row">
+            <input id="share-url" readonly />
+            <button id="copy-share-url" class="ghost">Copy</button>
+          </div>
+        </div>
+      </aside>
+
+      <aside id="profile" class="profile" hidden aria-label="Your profile">
+        <div class="profile-head">
+          <h2>What we've learned about you</h2>
+          <button id="close-profile" class="ghost">Close</button>
+        </div>
+        <p class="profile-brief" id="profile-brief"></p>
+
+        <h3>Pace</h3>
+        <p class="pace-readout" id="pace-readout"></p>
+
+        <h3>On this podcast</h3>
+        <ul id="interest-list" class="chips"></ul>
+        <form id="add-interest" class="add-interest">
+          <input id="interest-input" placeholder="Add something you care about" maxlength="60" />
+          <button class="primary">Add</button>
+        </form>
+
+        <div id="elsewhere-block" hidden>
+          <h3>From your other podcasts</h3>
+          <p class="profile-note">
+            Things you asked about on a different show, and a few picked up before we
+            recorded why. They don't steer this one — ask about any of them here and
+            they'll move across.
+          </p>
+          <ul id="elsewhere-list" class="chips"></ul>
+        </div>
+
+        <h3>Recent calls</h3>
+        <ul id="callin-list" class="log"></ul>
+      </aside>
+
+      <p id="toast" class="toast" role="status" hidden></p>
+    </main>
+
+    <script src="app.js" type="module"></script>
+  </body>
+</html>

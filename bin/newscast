@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# Start the app. Keys come from the environment or from .env (see .env.example).
+#
+#   bin/newscast              # real wire, real hosts
+#   bin/newscast --stub-wire  # fake headlines, no NewsMCP budget spent
+set -euo pipefail
+cd "$(dirname "$0")/.."
+
+if [[ "${1:-}" == "--stub-wire" ]]; then
+  shift
+  node scripts/stub-wire.mjs 4399 &
+  STUB_PID=$!
+  trap 'kill "$STUB_PID" 2>/dev/null || true' EXIT
+  sleep 0.4
+  export NEWSMCP_URL="http://127.0.0.1:4399/mcp"
+  echo "using the stub wire — no NewsMCP budget will be spent"
+fi
+
+exec node server.js "$@"

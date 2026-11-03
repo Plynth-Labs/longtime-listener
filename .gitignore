@@ -1,0 +1,7 @@
+node_modules/
+data/cache/
+data/profiles/
+data/shows/
+data/episodes/
+.env
+*.log
